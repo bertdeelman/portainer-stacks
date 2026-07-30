@@ -12,6 +12,14 @@ services:
     volumes:
       - uptime-kuma:/app/data
       - /var/run/docker.sock:/var/run/docker.sock
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+        tag: "{{.Name}}"
+
     labels:
       - homepage.group=Monitoring
       - homepage.name=Uptime Kuma
