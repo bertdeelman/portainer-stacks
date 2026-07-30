@@ -9,3 +9,7 @@
 
 # Synology systeemmappen
 @eaDir/
+
+# Portainer stack.env (lokaal, per stack, niet naar Git)
+stack.env
+**/stack.env
