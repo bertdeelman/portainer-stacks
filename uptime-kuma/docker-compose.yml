@@ -1,0 +1,20 @@
+version: '3'
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:${UPTIME_KUMA_TAG:-2}
+    container_name: uptime-kuma
+    restart: always
+    network_mode: ${DOCKER_NETWORK:-deellan}
+    ports:
+      - "${UPTIME_KUMA_PORT:-3010}:3001"
+    volumes:
+      - uptime-kuma:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - homepage.group=Monitoring
+      - homepage.name=Uptime Kuma
+      - homepage.icon=uptime-kuma.png
+      - homepage.href=http://media4.local:${UPTIME_KUMA_PORT:-3010}/
+      - homepage.description=Uptime monitoring
+volumes:
+  uptime-kuma:
