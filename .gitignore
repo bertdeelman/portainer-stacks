@@ -6,3 +6,6 @@
 # Overig
 .DS_Store
 *.log
+
+# Synology systeemmappen
+@eaDir/
