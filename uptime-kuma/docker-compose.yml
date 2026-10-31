@@ -1,4 +1,3 @@
-version: '3'
 services:
   uptime-kuma:
     image: louislam/uptime-kuma:${UPTIME_KUMA_TAG}
@@ -11,7 +10,7 @@ services:
       - "${UPTIME_KUMA_PORT}:3001"
     volumes:
       - uptime-kuma:/app/data
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 
     logging:
       driver: json-file
@@ -24,7 +23,7 @@ services:
       - homepage.group=Monitoring
       - homepage.name=Uptime Kuma
       - homepage.icon=uptime-kuma.png
-      - homepage.href=http://media4.local:${UPTIME_KUMA_PORT}/
+      - homepage.href=http://${UPTIME_KUMA_HOST}:${UPTIME_KUMA_PORT}/
       - homepage.description=Uptime monitoring
 volumes:
   uptime-kuma:
