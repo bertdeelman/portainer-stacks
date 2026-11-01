@@ -1,0 +1,19 @@
+# server1: synchroniseert Pi-hole media4 (primair) naar pihole-replica, elk uur
+services:
+  nebula-sync:
+    image: ghcr.io/lovelaze/nebula-sync:${NEBULA_TAG}
+    container_name: nebula-sync
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ}
+      PRIMARY: ${NEBULA_PRIMARY}
+      REPLICAS: ${NEBULA_REPLICAS}
+      FULL_SYNC: "true"
+      RUN_GRAVITY: "true"
+      CRON: ${NEBULA_CRON}
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+        tag: "{{.Name}}"

@@ -1,0 +1,25 @@
+# server1: tweede Pi-hole (v6), gevuld door nebula-sync vanaf de Pi-hole op media4
+services:
+  pihole:
+    image: pihole/pihole:${PIHOLE_TAG}
+    container_name: pihole-replica
+    hostname: pihole-replica
+    restart: unless-stopped
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "${PIHOLE_WEB_PORT}:80/tcp"
+    volumes:
+      - pihole-etc:/etc/pihole
+    environment:
+      TZ: ${TZ}
+      FTLCONF_webserver_api_password: ${PIHOLE_PASSWORD}
+      FTLCONF_dns_listeningMode: all
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+        tag: "{{.Name}}"
+volumes:
+  pihole-etc:
