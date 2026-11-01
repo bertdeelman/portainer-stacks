@@ -1,0 +1,29 @@
+# media4: dagelijkse pg_dumpall van de gedeelde Postgres (n8n, Planka, ...)
+services:
+  postgres-backup:
+    image: prodrigestivill/postgres-backup-local:${PGBACKUP_TAG}
+    container_name: postgres-backup
+    network_mode: ${DOCKER_NETWORK}
+    user: "999:999"
+    restart: unless-stopped
+    volumes:
+      - ${BACKUP_DIR}:/backups
+    environment:
+      TZ: ${TZ}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_DB: postgres
+      POSTGRES_CLUSTER: "TRUE"
+      POSTGRES_EXTRA_OPTS: ""
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      SCHEDULE: ${PGBACKUP_SCHEDULE}
+      BACKUP_ON_START: "TRUE"
+      BACKUP_KEEP_DAYS: "7"
+      BACKUP_KEEP_WEEKS: "4"
+      BACKUP_KEEP_MONTHS: "6"
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+        tag: "{{.Name}}"
