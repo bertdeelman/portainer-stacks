@@ -26,6 +26,12 @@ services:
         max-size: "1m"
         max-file: "3"
         tag: "{{.Name}}"
+    labels:
+      - homepage.group=Infrastructure
+      - homepage.name=Backrest
+      - homepage.icon=mdi-backup-restore
+      - homepage.href=http://${BACKREST_HOST}:${BACKREST_PORT}/
+      - homepage.description=Back-ups naar server1
 volumes:
   backrest-data:
   backrest-config:
