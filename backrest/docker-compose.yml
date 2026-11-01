@@ -1,0 +1,32 @@
+# media4: Backrest (web-UI voor restic), back-upt Docker-configs + Postgres-dumps naar server1
+services:
+  backrest:
+    image: garethgeorge/backrest:${BACKREST_TAG}
+    container_name: backrest
+    hostname: backrest
+    network_mode: ${DOCKER_NETWORK}
+    restart: unless-stopped
+    ports:
+      - "${BACKREST_PORT}:9898"
+    volumes:
+      - backrest-data:/data
+      - backrest-config:/config
+      - backrest-cache:/cache
+      - ${SOURCE_DOCKER_DIR}:/userdata/docker:ro
+      - ${SOURCE_PROJECTS_DIR}:/userdata/projects:ro
+      - ${SOURCE_PGDUMPS_DIR}:/userdata/pgdumps:ro
+    environment:
+      TZ: ${TZ}
+      BACKREST_DATA: /data
+      BACKREST_CONFIG: /config/config.json
+      XDG_CACHE_HOME: /cache
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+        tag: "{{.Name}}"
+volumes:
+  backrest-data:
+  backrest-config:
+  backrest-cache:
