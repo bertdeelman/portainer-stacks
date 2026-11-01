@@ -1,0 +1,19 @@
+# server1: restic REST-server als back-updoel, append-only (media4 kan niets wissen)
+services:
+  restic-server:
+    image: restic/rest-server:${RESTSERVER_TAG}
+    container_name: restic-server
+    restart: unless-stopped
+    ports:
+      - "${RESTSERVER_PORT}:8000"
+    volumes:
+      - ${RESTIC_DATA_DIR}:/data
+    environment:
+      TZ: ${TZ}
+      OPTIONS: "--append-only --private-repos --prometheus"
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+        tag: "{{.Name}}"
