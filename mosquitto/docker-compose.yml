@@ -1,0 +1,21 @@
+# server1: MQTT-broker voor Home Assistant en Zigbee2MQTT (vervangt de Mosquitto-app op de t630)
+# Config en wachtwoordbestand staan op de host in ${MOSQUITTO_DIR}/config, zie docs/ha-migratie.md
+services:
+  mosquitto:
+    image: eclipse-mosquitto:${MOSQUITTO_TAG}
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "${MQTT_PORT}:1883"
+    volumes:
+      - ${MOSQUITTO_DIR}/config:/mosquitto/config
+      - ${MOSQUITTO_DIR}/data:/mosquitto/data
+      - ${MOSQUITTO_DIR}/log:/mosquitto/log
+    environment:
+      TZ: ${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+        tag: "{{.Name}}"

@@ -1,0 +1,24 @@
+# server1: Home Assistant Container (vervangt HAOS op de t630)
+# Host networking is nodig voor discovery (mDNS/SSDP), HomeKit Bridge en Apple TV/Sonos/Cast
+services:
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:${HA_TAG}
+    container_name: homeassistant
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ${HA_CONFIG_DIR}:/config
+      - /etc/localtime:/etc/localtime:ro
+      # Alleen nodig als de USB Bluetooth-dongle meegaat naar server1:
+      # - /run/dbus:/run/dbus:ro
+    environment:
+      TZ: ${TZ}
+    labels:
+      # Niet automatisch updaten: HA-updates bewust doen (breaking changes)
+      - com.centurylinklabs.watchtower.enable=false
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+        tag: "{{.Name}}"

@@ -1,0 +1,32 @@
+# server1: Zigbee2MQTT met de SLZB-06M via het netwerk (vervangt de Z2M-app op de t630)
+# De bestaande data (configuration.yaml, database.db, coordinator_backup.json) komt in ${Z2M_DATA_DIR}
+# MQTT- en serial-instellingen komen uit de environment en overschrijven die in configuration.yaml
+services:
+  zigbee2mqtt:
+    image: ghcr.io/koenkk/zigbee2mqtt:${Z2M_TAG}
+    container_name: zigbee2mqtt
+    restart: unless-stopped
+    ports:
+      - "${Z2M_FRONTEND_PORT}:8080"
+    volumes:
+      - ${Z2M_DATA_DIR}:/app/data
+    environment:
+      TZ: ${TZ}
+      ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://${MQTT_HOST}:${MQTT_PORT}
+      ZIGBEE2MQTT_CONFIG_MQTT_USER: ${MQTT_USER}
+      ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD: ${MQTT_PASSWORD}
+      ZIGBEE2MQTT_CONFIG_SERIAL_PORT: ${Z2M_SERIAL_PORT}
+      ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: ${Z2M_SERIAL_ADAPTER}
+      ZIGBEE2MQTT_CONFIG_SERIAL_BAUDRATE: ${Z2M_SERIAL_BAUDRATE}
+      ZIGBEE2MQTT_CONFIG_FRONTEND_ENABLED: "true"
+      ZIGBEE2MQTT_CONFIG_FRONTEND_PORT: "8080"
+      ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_ENABLED: "true"
+    labels:
+      # Niet automatisch updaten: Z2M-updates bewust doen
+      - com.centurylinklabs.watchtower.enable=false
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+        tag: "{{.Name}}"

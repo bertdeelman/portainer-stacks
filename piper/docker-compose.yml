@@ -1,0 +1,21 @@
+# server1: Piper text-to-speech via Wyoming (vervangt de Piper-app op de t630)
+services:
+  piper:
+    image: rhasspy/wyoming-piper:${PIPER_TAG}
+    container_name: piper
+    restart: unless-stopped
+    command: --voice ${PIPER_VOICE}
+    ports:
+      - "${PIPER_PORT}:10200"
+    volumes:
+      - piper-data:/data
+    environment:
+      TZ: ${TZ}
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+        tag: "{{.Name}}"
+volumes:
+  piper-data:
