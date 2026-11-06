@@ -6,6 +6,10 @@ services:
     container_name: homeassistant
     restart: unless-stopped
     network_mode: host
+    cap_add:
+      # Laat HA een Bluetooth-adapter zelf herstellen (voorkomt NET_ADMIN/NET_RAW-fout in de log)
+      - NET_ADMIN
+      - NET_RAW
     volumes:
       - ${HA_CONFIG_DIR}:/config
       - /etc/localtime:/etc/localtime:ro
