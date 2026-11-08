@@ -11,6 +11,11 @@ services:
       FULL_SYNC: "true"
       RUN_GRAVITY: "true"
       CRON: ${NEBULA_CRON}
+    labels:
+      - homepage.group=Infrastructure
+      - homepage.name=Nebula Sync
+      - homepage.icon=mdi-sync
+      - homepage.description=Pi-hole sync media4 naar replica (server1)
     logging:
       driver: json-file
       options:

@@ -30,6 +30,11 @@ services:
         {{- end -}}
       WATCHTOWER_NOTIFICATIONS: "shoutrrr"
       WATCHTOWER_NOTIFICATION_URL: ${WATCHTOWER_NOTIFICATION_URL}
+    labels:
+      - homepage.group=Monitoring
+      - homepage.name=Watchtower ${WATCHTOWER_HOSTNAME}
+      - homepage.icon=watchtower.png
+      - homepage.description=Container-updates
     logging:
       driver: json-file
       options:

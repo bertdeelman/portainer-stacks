@@ -11,6 +11,11 @@ services:
     environment:
       TZ: ${TZ}
       OPTIONS: "--append-only --private-repos --prometheus"
+    labels:
+      - homepage.group=Infrastructure
+      - homepage.name=Restic server
+      - homepage.icon=restic.png
+      - homepage.description=Back-updoel, append-only (server1)
     logging:
       driver: json-file
       options:

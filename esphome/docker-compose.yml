@@ -12,6 +12,12 @@ services:
     environment:
       TZ: ${TZ}
       ESPHOME_DASHBOARD_USE_PING: "true"
+    labels:
+      - homepage.group=Smart Home
+      - homepage.name=ESPHome
+      - homepage.icon=esphome.png
+      - homepage.href=http://${ESPHOME_HOST}:6052/
+      - homepage.description=Device Builder (server1)
     logging:
       driver: json-file
       options:

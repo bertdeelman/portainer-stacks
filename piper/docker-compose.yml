@@ -11,6 +11,11 @@ services:
       - piper-data:/data
     environment:
       TZ: ${TZ}
+    labels:
+      - homepage.group=Smart Home
+      - homepage.name=Piper
+      - homepage.icon=mdi-text-to-speech
+      - homepage.description=Text-to-speech via Wyoming (server1)
     logging:
       driver: json-file
       options:

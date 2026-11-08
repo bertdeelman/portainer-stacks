@@ -24,6 +24,11 @@ services:
     labels:
       # Niet automatisch updaten: Z2M-updates bewust doen
       - com.centurylinklabs.watchtower.enable=false
+      - homepage.group=Smart Home
+      - homepage.name=Zigbee2MQTT
+      - homepage.icon=zigbee2mqtt.png
+      - homepage.href=http://${Z2M_HOST}:${Z2M_FRONTEND_PORT}/
+      - homepage.description=Zigbee via SLZB-06M (server1)
     logging:
       driver: json-file
       options:

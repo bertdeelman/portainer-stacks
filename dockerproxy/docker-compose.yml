@@ -11,6 +11,11 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
+    labels:
+      - homepage.group=Infrastructure
+      - homepage.name=Docker Proxy server1
+      - homepage.icon=docker.png
+      - homepage.description=Docker socket proxy (server1)
     logging:
       driver: json-file
       options:

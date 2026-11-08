@@ -21,6 +21,11 @@ services:
       BACKUP_KEEP_DAYS: "7"
       BACKUP_KEEP_WEEKS: "4"
       BACKUP_KEEP_MONTHS: "6"
+    labels:
+      - homepage.group=Infrastructure
+      - homepage.name=Postgres backup
+      - homepage.icon=postgres.png
+      - homepage.description=Dagelijkse pg_dumpall (media4)
     logging:
       driver: json-file
       options:

@@ -13,6 +13,11 @@ services:
       - ${MOSQUITTO_DIR}/log:/mosquitto/log
     environment:
       TZ: ${TZ}
+    labels:
+      - homepage.group=Smart Home
+      - homepage.name=Mosquitto
+      - homepage.icon=mosquitto.png
+      - homepage.description=MQTT-broker (server1)
     logging:
       driver: json-file
       options:
