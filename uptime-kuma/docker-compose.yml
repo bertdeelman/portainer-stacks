@@ -1,15 +1,15 @@
+# server1: Uptime Kuma (monitoring, Pushover-notificaties)
 services:
   uptime-kuma:
     image: louislam/uptime-kuma:${UPTIME_KUMA_TAG}
     container_name: uptime-kuma
     restart: always
-    network_mode: ${DOCKER_NETWORK}
     environment:
       - TZ=${TZ}
     ports:
       - "${UPTIME_KUMA_PORT}:3001"
     volumes:
-      - uptime-kuma:/app/data
+      - uptime-kuma-data:/app/data
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
     logging:
@@ -26,4 +26,4 @@ services:
       - homepage.href=http://${UPTIME_KUMA_HOST}:${UPTIME_KUMA_PORT}/
       - homepage.description=Uptime monitoring
 volumes:
-  uptime-kuma:
+  uptime-kuma-data:
