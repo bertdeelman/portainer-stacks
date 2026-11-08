@@ -1,0 +1,52 @@
+# media4: stack "crowdsec" (gemigreerd van Portainer web editor)
+services:
+  crowdsec:
+    healthcheck:
+      test: ["CMD", "cscli", "lapi", "status"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    image: crowdsecurity/crowdsec:${CROWDSEC_TAG}
+    container_name: crowdsec
+    restart: unless-stopped
+
+    ports:
+      - "${CROWDSEC_HOST_PORT}:6060"
+
+    environment:
+      TZ: ${TZ}
+      COLLECTIONS: >-
+        crowdsecurity/nginx
+        crowdsecurity/http-cve
+        crowdsecurity/base-http-scenarios
+
+    volumes:
+      - ${DOCKER_DIR}/crowdsec/config:/etc/crowdsec
+      - ${DOCKER_DIR}/crowdsec/data:/var/lib/crowdsec/data
+
+      # NPM logs alleen-lezen
+      - ${DOCKER_DIR}/npm/data/logs:/var/log/npm:ro
+
+    networks:
+      - deellan
+
+    security_opt:
+      - no-new-privileges:true
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+        tag: "{{.Name}}"
+
+    labels:
+      - homepage.group=Security
+      - homepage.name=CrowdSec
+      - homepage.icon=crowdsec.png
+      - homepage.description=IDS voor NPM
+networks:
+  deellan:
+    external: true
+    name: ${DOCKER_NETWORK}

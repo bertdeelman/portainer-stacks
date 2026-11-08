@@ -1,0 +1,41 @@
+# media4: stack "calibreweb" (gemigreerd van Portainer web editor)
+# Calibre – Library Download and Management
+services:
+  calibre-web:
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs -o /dev/null http://localhost:8083/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    image: ghcr.io/linuxserver/calibre-web:${CALIBRE_WEB_TAG}
+    network_mode: ${DOCKER_NETWORK}
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    container_name: calibre-web
+    hostname: calibre-web
+    volumes:
+      - ${DOCKER_DIR}/calibreweb:/config
+      - ${BOEKENCALIBRE_DIR}:/books
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
+    ports:
+      - ${CALIBRE_WEB_HOST_PORT}:8083
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "3"
+        tag: "{{.Name}}"
+    labels:
+      - homepage.group=Media
+      - homepage.name=CalibreWeb
+      - homepage.icon=calibre.png
+      - homepage.href=http://${HOMEPAGE_HOST}:8083/
+      - homepage.description=CalibreWeb
+      - monocker.enable=true

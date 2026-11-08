@@ -1,0 +1,48 @@
+# media4: stack "nginx-proxy-manager" (gemigreerd van Portainer web editor)
+services:
+  nginx-proxy-manager:
+    healthcheck:
+      test: ["CMD", "/usr/bin/check-health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    image: jc21/nginx-proxy-manager:${NGINX_PROXY_MANAGER_TAG}
+    container_name: nginx-proxy-manager
+    restart: unless-stopped
+    ports:
+      - "${NGINX_PROXY_MANAGER_HOST_PORT}:81"
+    volumes:
+      - ${DOCKER_DIR}/npm/config.json:/app/config/production.json
+      - ${DOCKER_DIR}/npm/data:/data
+      - ${DOCKER_DIR}/npm/letsencrypt:/etc/letsencrypt
+      - ${DOCKER_DIR}/npm/data/nginx/snippets:/snippets
+      - ${DOCKER_DIR}/maxmind:/usr/share/GeoIP:ro
+    environment:
+      - TZ=${TZ}
+      - DISABLE_IPV6=true
+      - FORCE_COLOR=1
+    networks:
+      ag_network:
+        ipv4_address: ${NGINX_PROXY_MANAGER_IP}
+      deellan:
+        ipv4_address: ${NGINX_PROXY_MANAGER_DEELLAN_IP}
+    labels:
+      - homepage.group=Infrastructure
+      - homepage.name=Nginx Proxy Manager
+      - homepage.icon=nginx-proxy-manager.png
+      - homepage.href=http://${HOMEPAGE_HOST}:681/
+      - homepage.description=Reverse proxy
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
+        tag: '{{.Name}}'
+networks:
+  ag_network:
+    external: true
+    name: ${MACVLAN_NETWORK}
+  deellan:
+    external: true
+    name: ${DOCKER_NETWORK}

@@ -1,0 +1,42 @@
+# media4: stack "influxdb2" (gemigreerd van Portainer web editor)
+services:
+  influxdb2:
+    healthcheck:
+      test: ["CMD", "influx", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    image: influxdb:${INFLUXDB2_TAG}
+    network_mode: ${DOCKER_NETWORK}
+    container_name: influxdb2
+    ports:
+      - "${INFLUXDB2_HOST_PORT}:8086"
+    volumes:
+      - type: bind
+        source: ${DOCKER_DIR}/influxdb2/data
+        target: /var/lib/influxdb2
+      - type: bind
+        source: ${DOCKER_DIR}/influxdb2/config
+        target: /etc/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=${DOCKER_INFLUXDB_INIT_USERNAME}
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${DOCKER_INFLUXDB_INIT_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_ORG=${DOCKER_INFLUXDB_INIT_ORG}
+      - DOCKER_INFLUXDB_INIT_BUCKET=${DOCKER_INFLUXDB_INIT_BUCKET}
+      - DOCKER_INFLUXDB_INIT_RETENTION=1d
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN}
+    restart: always
+    labels:
+      - homepage.group=Monitoring
+      - homepage.name=InfluxDB
+      - homepage.icon=influxdb.png
+      - homepage.href=http://${HOMEPAGE_HOST}:${INFLUXDB2_HOST_PORT}/
+      - homepage.description=Time series database
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
+        tag: '{{.Name}}'

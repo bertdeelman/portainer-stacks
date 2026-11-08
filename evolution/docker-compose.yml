@@ -1,0 +1,67 @@
+# media4: stack "evolution" (gemigreerd van Portainer web editor)
+services:
+  evolution-api:
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:8080/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    image: evoapicloud/evolution-api:${EVOLUTION_API_TAG}
+    container_name: evolution-api
+    restart: unless-stopped
+    ports:
+      - "${EVOLUTION_API_HOST_PORT}:8080"
+    environment:
+      SERVER_URL: "${SERVER_URL}"
+      AUTHENTICATION_API_KEY: "${AUTHENTICATION_API_KEY}"
+      DATABASE_ENABLED: "true"
+      DATABASE_PROVIDER: "postgresql"
+      DATABASE_CONNECTION_URI: "${DATABASE_CONNECTION_URI}"
+      DATABASE_CONNECTION_CLIENT_NAME: "${DATABASE_CONNECTION_CLIENT_NAME}"
+
+      DATABASE_SAVE_DATA_INSTANCE: "true"
+      DATABASE_SAVE_DATA_NEW_MESSAGE: "true"
+      DATABASE_SAVE_MESSAGE_UPDATE: "true"
+      DATABASE_SAVE_DATA_CONTACTS: "true"
+      DATABASE_SAVE_DATA_CHATS: "true"
+      DATABASE_SAVE_DATA_LABELS: "true"
+
+      CACHE_REDIS_ENABLED: "true"
+      CACHE_REDIS_URI: "${CACHE_REDIS_URI}"
+      CACHE_REDIS_PREFIX_KEY: "${CACHE_REDIS_PREFIX_KEY}"
+      CACHE_LOCAL_ENABLED: "false"
+
+#      LOG_LEVEL: "ERROR"
+      LOG_LEVEL: "DEBUG"
+      LOG_BAILEYS: "debug"
+#      LOG_BAILEYS: "error"
+      LOG_COLOR: "false"
+
+      DEL_INSTANCE: "false"
+      QRCODE_LIMIT: "30"
+    volumes:
+      - ${DOCKER_DIR}/evolution/instances:/evolution/instances
+      - ${DOCKER_DIR}/evolution/store:/evolution/store
+    networks:
+      - deellan
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+        tag: "{{.Name}}"
+
+
+
+
+    labels:
+      - homepage.group=Automation
+      - homepage.name=Evolution API
+      - homepage.icon=whatsapp.png
+      - homepage.href=http://${HOMEPAGE_HOST}:${EVOLUTION_API_HOST_PORT}/manager
+      - homepage.description=WhatsApp API
+networks:
+  deellan:
+    external: true
+    name: ${DOCKER_NETWORK}

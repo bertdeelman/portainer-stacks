@@ -1,0 +1,40 @@
+# media4: stack "pihole-exporter" (gemigreerd van Portainer web editor)
+services:
+  pihole-exporter:
+    container_name: pihole-exporter
+    image: amonacoos/pihole6_exporter:${PIHOLE_EXPORTER_TAG}
+    restart: unless-stopped
+    environment:
+      PIHOLE_HOST: "${PIHOLE_HOST}"
+      PIHOLE_PORT: "${PIHOLE_PORT}"
+      PIHOLE_API_KEY: "${PIHOLE_API_KEY}"
+      PIHOLE_SCHEME: "http"
+    networks:
+      ag_network:
+        ipv4_address: ${PIHOLE_EXPORTER_IP}
+      deellan:
+        ipv4_address: ${PIHOLE_EXPORTER_DEELLAN_IP}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5k"
+        max-file: "5"
+        tag: "{{.Name}}"
+    healthcheck:
+      test: ["CMD", "wget", "--tries=1", "--spider", "http://localhost:9666/metrics"]
+      interval: 300s
+      retries: 5
+      timeout: 10s
+
+    labels:
+      - homepage.group=Monitoring
+      - homepage.name=Pi-hole exporter
+      - homepage.icon=prometheus.png
+      - homepage.description=Pi-hole-metrics
+networks:
+  ag_network:
+    external: true
+    name: ${MACVLAN_NETWORK}
+  deellan:
+    external: true
+    name: ${DOCKER_NETWORK}

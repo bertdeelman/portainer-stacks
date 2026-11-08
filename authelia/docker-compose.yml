@@ -1,0 +1,44 @@
+# media4: stack "authelia" (gemigreerd van Portainer web editor)
+services:
+  authelia:
+    image: authelia/authelia:${AUTHELIA_TAG}
+    container_name: authelia
+
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+
+    network_mode: ${DOCKER_NETWORK}
+
+    ports:
+      - "${AUTHELIA_HOST_PORT_9091}:9091"
+      - "${AUTHELIA_HOST_PORT_9959}:9959"
+
+    volumes:
+      - ${DOCKER_DIR}/authelia:/config
+      - ${DOCKER_DIR}/authelia/secrets:/secrets:ro
+
+    environment:
+      - TZ=${TZ}
+      - AUTHELIA_SESSION_SECRET_FILE=${AUTHELIA_SESSION_SECRET_FILE}
+      - AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE=${AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE}
+      - AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE=${AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE}
+      - AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE=${AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE}
+      - AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE=${AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE}
+
+    restart: unless-stopped
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+        tag: "{{.Name}}"
+
+    labels:
+      - homepage.group=Security
+      - homepage.name=Authelia
+      - homepage.icon=authelia.png
+      - homepage.href=http://${HOMEPAGE_HOST}:9091/
+      - homepage.description=SSO and MFA
+      - monocker.enable=true

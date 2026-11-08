@@ -1,0 +1,39 @@
+# media4: stack "pihole" (gemigreerd van Portainer web editor)
+services:
+  pihole:
+    image: pihole/pihole:${PIHOLE_TAG}
+    container_name: pihole
+    restart: always
+    volumes:
+      - ${DOCKER_DIR}/pihole/dnsmasq.d:/etc/dnsmasq.d
+      - ${DOCKER_DIR}/pihole/pihole:/etc/pihole
+    environment:
+      - FTLCONF_webserver_port=${FTLCONF_WEBSERVER_PORT}
+      - FTLCONF_dns_reply_addr4=${FTLCONF_DNS_REPLY_ADDR4}
+      - WEBPASSWORD=${WEBPASSWORD}
+      - TZ=${TZ}
+      - DNSMASQ_USER=${DNSMASQ_USER}
+      - DNSMASQ_LISTENING=all
+    networks:
+      ag_network:
+        ipv4_address: ${PIHOLE_IP}   # Assign a unique IP within the ag_network Macvlan range
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1  # Cloudflare backup
+    labels:
+      - com.centurylinklabs.watchtower.enable=false
+      - homepage.group=Infrastructure
+      - homepage.name=Pi-hole
+      - homepage.icon=pi-hole.png
+      - homepage.href=http://${PIHOLE_IP}:${FTLCONF_WEBSERVER_PORT}/admin/
+      - homepage.description=DNS (media4)
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
+        tag: '{{.Name}}'
+networks:
+  ag_network:
+    external: true
+    name: ${MACVLAN_NETWORK}

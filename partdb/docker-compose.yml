@@ -1,0 +1,39 @@
+# media4: stack "partdb" (gemigreerd van Portainer web editor)
+services:
+  partdb:
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs -o /dev/null -H 'Host: 192.168.1.66' http://localhost/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    image: jbtronics/part-db1:${PARTDB_TAG}
+    container_name: partdb
+    restart: unless-stopped
+    network_mode: ${DOCKER_NETWORK}
+    ports:
+      - "${PARTDB_HOST_PORT}:80"
+    volumes:
+      - ${DOCKER_DIR}/partdb/uploads:/var/www/html/uploads
+      - ${DOCKER_DIR}/partdb/public_media:/var/www/html/public/media
+      - ${DOCKER_DIR}/partdb/db:/var/www/html/var/db
+    environment:
+      - APP_ENV=docker
+      - DEFAULT_TIMEZONE=${DEFAULT_TIMEZONE}
+      - DEFAULT_URI=${DEFAULT_URI}
+      - TRUSTED_HOSTS=${TRUSTED_HOSTS}
+      - APP_SECRET=${APP_SECRET}
+      - WATCHTOWER_API_URL=${WATCHTOWER_API_URL}
+      - WATCHTOWER_API_TOKEN=${WATCHTOWER_API_TOKEN}
+    labels:
+      - homepage.group=Automation
+      - homepage.name=Part-DB
+      - homepage.icon=part-db.png
+      - homepage.href=http://${HOMEPAGE_HOST}:${PARTDB_HOST_PORT}/
+      - homepage.description=Componenten-inventaris
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
+        tag: '{{.Name}}'

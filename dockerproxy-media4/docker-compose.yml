@@ -1,0 +1,39 @@
+# media4: stack "dockerproxy" (gemigreerd van Portainer web editor)
+services:
+  dockerproxy:
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:2375/_ping || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    image: ghcr.io/tecnativa/docker-socket-proxy:${DOCKERPROXY_TAG}
+    container_name: dockerproxy
+    network_mode: ${DOCKER_NETWORK}
+    environment:
+      - CONTAINERS=1 # Allow access to viewing containers
+      - SERVICES=1 # Allow access to viewing services (necessary when using Docker Swarm)
+      - TASKS=1 # Allow access to viewing tasks (necessary when using Docker Swarm)
+      - POST=0 # Disallow any POST operations (effectively read-only)
+#      - INFO=1
+#      - VERSION=1
+#      - IMAGES=1      # <-- TOEVOEGEN
+      - STATS=1       # <-- TOEVOEGEN voor widget stats
+    ports:
+      - ${DOCKERPROXY_HOST_PORT}:2375
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+        tag: "{{.Name}}"
+    labels:
+      - homepage.group=Infrastructure
+      - homepage.name=Docker Proxy
+      - homepage.icon=docker.png
+      - homepage.href=http://${HOMEPAGE_HOST}:2375
+      - homepage.description=Docker socket proxy
+      - monocker.enable=true

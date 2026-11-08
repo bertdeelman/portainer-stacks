@@ -1,0 +1,157 @@
+# media4: stack "arr" (gemigreerd van Portainer web editor)
+services:
+  gluetun:
+    image: ghcr.io/qdm12/gluetun:${GLUETUN_TAG}
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    network_mode: ${DOCKER_NETWORK}
+    ports:
+      - ${GLUETUN_HOST_PORT_14815_TCP}:14815/tcp
+      - ${GLUETUN_HOST_PORT_14815}:14815/udp
+      - ${GLUETUN_HOST_PORT_8080}:8080
+      - ${GLUETUN_HOST_PORT_9117}:9117
+      - ${GLUETUN_HOST_PORT_8787}:8787
+      - ${GLUETUN_CONTROL_PORT}:8000
+    volumes:
+      - ${DOCKER_DIR}/gluetun:/gluetun
+    environment:
+      - BLOCK_MALICIOUS=off
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+      - HTTPPROXY=off
+      - SHADOWSOCKS=off
+      - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER}
+      - VPN_TYPE=${VPN_TYPE}
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+      - WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
+      - WIREGUARD_PUBLIC_KEY=${WIREGUARD_PUBLIC_KEY}
+      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
+      - UPDATER_PERIOD=24h
+      - SERVER_COUNTRIES=${SERVER_COUNTRIES}
+      - HEALTH_VPN_DURATION_INITIAL=${HEALTH_VPN_DURATION_INITIAL}
+      - FIREWALL_VPN_INPUT_PORTS=${FIREWALL_VPN_INPUT_PORTS}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "/gluetun-entrypoint", "healthcheck"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 2m
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+        tag: "{{.Name}}"
+    labels:
+      - homepage.group=Infrastructure
+      - homepage.name=Gluetun
+      - homepage.icon=gluetun.png
+      - homepage.description=VPN gateway
+
+  qbittorrent:
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs -o /dev/null http://localhost:8080/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    image: lscr.io/linuxserver/qbittorrent:${QBITTORRENT_TAG}
+    container_name: qbittorrent
+    volumes:
+      - ${DOCKER_DIR}/qbittorrent:/config
+      - ${DOWNLOADS_DIR}:/downloads
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+      - WEBUI_PORT=${WEBUI_PORT}
+      - TORRENTING_PORT=${TORRENTING_PORT}
+    network_mode: service:gluetun
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+        tag: "{{.Name}}"
+    labels:
+      - com.centurylinklabs.watchtower.depends-on=gluetun
+
+  jackett:
+    image: linuxserver/jackett:${JACKETT_TAG}
+    container_name: jackett
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${DOCKER_DIR}/jackett/config:/config
+      - ${DOWNLOADS_DIR}:/downloads
+    network_mode: service:gluetun
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9117/UI/Dashboard"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+        tag: "{{.Name}}"
+    labels:
+      - homepage.group=Media
+      - homepage.name=Jackett
+      - homepage.icon=jackett.png
+      - homepage.href=http://${HOMEPAGE_HOST}:9117/
+      - homepage.description=Torrent indexers
+      - com.centurylinklabs.watchtower.depends-on=gluetun
+
+  readarr:
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs -o /dev/null http://localhost:8787/ping || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    image: ghcr.io/pennydreadful/bookshelf:${READARR_TAG}
+    container_name: readarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${DOCKER_DIR}/readarr/config:/config
+      - ${DOWNLOADS_DIR}:/downloads
+      - ${DL_TORRENT_DIR}:/boeken
+    network_mode: service:gluetun
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+        tag: "{{.Name}}"
+    labels:
+      - homepage.group=Media
+      - homepage.name=Readarr
+      - homepage.icon=readarr.png
+      - homepage.href=http://${HOMEPAGE_HOST}:8787/
+      - homepage.description=Boeken manager
+      - com.centurylinklabs.watchtower.depends-on=gluetun

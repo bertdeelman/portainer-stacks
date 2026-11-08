@@ -1,0 +1,27 @@
+# media4: stack "maxmind" (gemigreerd van Portainer web editor)
+services:
+  geoipupdate:
+    image: ghcr.io/maxmind/geoipupdate:${GEOIPUPDATE_TAG}
+    container_name: geoipupdate
+    restart: unless-stopped
+
+    environment:
+      GEOIPUPDATE_ACCOUNT_ID: "${GEOIPUPDATE_ACCOUNT_ID}"
+      GEOIPUPDATE_LICENSE_KEY: "${GEOIPUPDATE_LICENSE_KEY}"
+      GEOIPUPDATE_EDITION_IDS: "GeoLite2-ASN GeoLite2-City GeoLite2-Country"
+      GEOIPUPDATE_FREQUENCY: "72"
+      GEOIPUPDATE_VERBOSE: "1"
+
+    volumes:
+      - ${DOCKER_DIR}/maxmind:/usr/share/GeoIP
+    labels:
+      - homepage.group=Security
+      - homepage.name=GeoIP update
+      - homepage.icon=mdi-earth
+      - homepage.description=MaxMind GeoLite2
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
+        tag: '{{.Name}}'

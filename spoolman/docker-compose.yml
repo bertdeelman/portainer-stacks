@@ -1,0 +1,33 @@
+# media4: stack "spoolman" (gemigreerd van Portainer web editor)
+services:
+  spoolman:
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8000/api/v1/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    container_name: spoolman
+    network_mode: ${DOCKER_NETWORK}
+    image: ghcr.io/donkie/spoolman:${SPOOLMAN_TAG}
+    restart: unless-stopped
+    volumes:
+      - ${DOCKER_DIR}/spoolman:/home/app/.local/share/spoolman
+    ports:
+      - ${SPOOLMAN_HOST_PORT}:8000
+    environment:
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
+    labels:
+      - homepage.group=Automation
+      - homepage.name=Spoolman
+      - homepage.icon=spoolman.png
+      - homepage.href=http://${HOMEPAGE_HOST}:${SPOOLMAN_HOST_PORT}/
+      - homepage.description=Filament-voorraad
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
+        tag: '{{.Name}}'

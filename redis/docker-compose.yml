@@ -1,0 +1,55 @@
+# media4: stack "redis" (gemigreerd van Portainer web editor)
+services:
+  redis:
+    image: redis:${REDIS_TAG}
+    network_mode: ${DOCKER_NETWORK}
+    container_name: redis
+    volumes:
+      - "${DOCKER_DIR}/redis:/data"   # change the local path to your NAS location where you want the DB data to live
+    ports:
+      - "${REDIS_HOST_PORT}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ}
+#    logging:
+#      driver: loki
+#      options:
+#        loki-url: "http://192.168.1.66:3100/loki/api/v1/push"
+#        max-size: "200m"
+
+    labels:
+      - homepage.group=Infrastructure
+      - homepage.name=Redis
+      - homepage.icon=redis.png
+      - homepage.description=Cache
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
+        tag: '{{.Name}}'
+  redis-exporter:
+    image: oliver006/redis_exporter:${REDIS_EXPORTER_TAG}
+    container_name: redis-exporter
+    network_mode: ${DOCKER_NETWORK}
+    restart: unless-stopped
+    environment:
+      - REDIS_ADDR=${REDIS_ADDR}
+      - TZ=${TZ}
+    ports:
+      - "${REDIS_EXPORTER_HOST_PORT}:9121"
+    depends_on:
+      - redis
+    labels:
+      - homepage.group=Monitoring
+      - homepage.name=Redis exporter
+      - homepage.icon=prometheus.png
+      - homepage.description=Redis-metrics
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
+        tag: '{{.Name}}'

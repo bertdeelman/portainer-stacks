@@ -1,0 +1,40 @@
+# media4: stack "alloy" (gemigreerd van Portainer web editor)
+services:
+  alloy:
+    image: grafana/alloy:${ALLOY_TAG}
+    container_name: alloy
+    hostname: ${ALLOY_HOSTNAME}
+    network_mode: ${DOCKER_NETWORK}
+    restart: unless-stopped
+    user: "0:0"
+
+    environment:
+      TZ: ${TZ}
+
+    ports:
+      - "${ALLOY_HOST_PORT}:12345"
+
+    volumes:
+      - ${DOCKER_DIR}/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - ${DOCKER_DIR}/alloy/data:/var/lib/alloy/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - --storage.path=/var/lib/alloy/data
+      - /etc/alloy/config.alloy
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+        tag: "{{.Name}}"
+
+    labels:
+      - homepage.group=Monitoring
+      - homepage.name=Alloy
+      - homepage.icon=alloy.png
+      - homepage.href=http://${HOMEPAGE_HOST}:12345/
+      - homepage.description=Docker logging

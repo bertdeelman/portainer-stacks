@@ -1,0 +1,90 @@
+# media4: stack "monitoring" (gemigreerd van Portainer web editor)
+services:
+  prometheus:
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:9090/-/healthy || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    image: prom/prometheus:${PROMETHEUS_TAG}
+    container_name: prometheus
+    network_mode: ${DOCKER_NETWORK}
+    restart: always
+    links:
+      - alertmanager
+      - node-exporter
+    user: 1039:65540
+    ports:
+      - ${PROMETHEUS_HOST_PORT}:9090
+    volumes:
+      - ${DOCKER_DIR}/prometheus/configs/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ${DOCKER_DIR}/prometheus/data/prometheus:/prometheus
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+        tag: "{{.Name}}"
+
+  alertmanager:
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:9093/-/healthy || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    image: prom/alertmanager:${ALERTMANAGER_TAG}
+    container_name: alertmanager
+    network_mode: ${DOCKER_NETWORK}
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ}
+    ports:
+      - "${ALERTMANAGER_HOST_PORT}:9093"
+    volumes:
+      - ${DOCKER_DIR}/prometheus/configs/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - ${DOCKER_DIR}/prometheus/data/alertmanager:/alertmanager
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --storage.path=/alertmanager
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    labels:
+      - homepage.group=Monitoring
+      - homepage.name=Alertmanager
+      - homepage.icon=alertmanager.png
+      - homepage.href=http://${HOMEPAGE_HOST}:9093/
+      - homepage.description=Alerts
+
+  node-exporter:
+    privileged: true
+    image: prom/node-exporter:${NODE_EXPORTER_TAG}
+    container_name: node-exporter
+    network_mode: ${DOCKER_NETWORK}
+    restart: always
+    ports:
+      - ${NODE_EXPORTER_HOST_PORT}:9100
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - "--path.procfs=/host/proc"
+      - "--path.sysfs=/host/sys"
+      - "--collector.filesystem.ignored-mount-points"
+      - "^/(rootfs/)?(dev|etc|host|proc|run|sys|volume1)($$|/)"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+        tag: "{{.Name}}"
+    labels:
+      - homepage.group=Monitoring
+      - homepage.name=Node exporter
+      - homepage.icon=prometheus.png
+      - homepage.description=Host-metrics media4

@@ -1,0 +1,31 @@
+# media4: stack "loki" (gemigreerd van Portainer web editor)
+services:
+  loki:
+    image: grafana/loki:${LOKI_TAG}
+    container_name: loki
+    ports:
+      - ${LOKI_HOST_PORT}:3100
+    user: root
+    command: -config.file=/etc/loki/local-config.yml
+    volumes:
+      - ${DOCKER_DIR}/loki/local-config.yml:/etc/loki/local-config.yml
+      - ${DOCKER_DIR}/loki/data:/loki
+    networks:
+      - deellan
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+        tag: "{{.Name}}"
+
+    labels:
+      - homepage.group=Monitoring
+      - homepage.name=Loki
+      - homepage.icon=loki.png
+      - homepage.description=Log-opslag
+networks:
+  deellan:
+    external: true
+    name: ${DOCKER_NETWORK}

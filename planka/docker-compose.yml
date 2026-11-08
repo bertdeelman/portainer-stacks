@@ -1,0 +1,37 @@
+# media4: stack "planka" (gemigreerd van Portainer web editor)
+services:
+  planka:
+    image: ghcr.io/plankanban/planka:${PLANKA_TAG}
+    container_name: planka
+    restart: unless-stopped
+    ports:
+      - "${PLANKA_HOST_PORT}:1337"
+    environment:
+      - BASE_URL=${BASE_URL}
+      - DATABASE_URL=postgresql://planka:${PLANKA_DB_PASSWORD}@postgres:5432/planka
+      - SECRET_KEY=${SECRET_KEY}
+      - DEFAULT_ADMIN_EMAIL=${ADMIN_EMAIL}
+      - DEFAULT_ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - DEFAULT_ADMIN_NAME=${DEFAULT_ADMIN_NAME}
+      - DEFAULT_ADMIN_USERNAME=${DEFAULT_ADMIN_USERNAME}
+    volumes:
+      - ${DOCKER_DIR}/planka/data:/app/data
+    networks:
+      - deellan
+
+    labels:
+      - homepage.group=Automation
+      - homepage.name=Planka
+      - homepage.icon=planka.png
+      - homepage.href=http://${HOMEPAGE_HOST}:${PLANKA_HOST_PORT}/
+      - homepage.description=Kanban
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
+        tag: '{{.Name}}'
+networks:
+  deellan:
+    external: true
+    name: ${DOCKER_NETWORK}

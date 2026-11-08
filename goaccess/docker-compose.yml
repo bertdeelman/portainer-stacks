@@ -1,0 +1,49 @@
+# media4: stack "goaccess" (gemigreerd van Portainer web editor)
+services:
+  goaccess:
+    image: xavierh/goaccess-for-nginxproxymanager:${GOACCESS_TAG}
+    container_name: goaccess
+    restart: unless-stopped
+
+    ports:
+      - "${GOACCESS_HOST_PORT}:7880"
+
+    environment:
+      TZ: ${TZ}
+      LOG_TYPE: NPM+ALL
+
+      # De healthcheck van je UniFi-router niet meetellen
+      EXCLUDE_IPS: ${EXCLUDE_IPS}
+
+      # Optioneel
+      # SKIP_ARCHIVED_LOGS: "False"
+      # DEBUG: "False"
+      # HTML_REFRESH: "5"
+      # KEEP_LAST: "30"
+      # PROCESSING_THREADS: "1"
+
+    volumes:
+      - ${DOCKER_DIR}/npm/data/logs:/opt/log:ro
+
+    networks:
+      - deellan
+
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: "1"
+        tag: "{{.Name}}"
+
+    labels:
+      - homepage.group=Infrastructure
+      - homepage.name=GoAccess
+      - homepage.icon=goaccess.png
+      - homepage.href=http://${HOMEPAGE_HOST}:7880/
+      - homepage.description=NPM logs
+      - monocker.enable=true
+
+networks:
+  deellan:
+    external: true
+    name: ${DOCKER_NETWORK}

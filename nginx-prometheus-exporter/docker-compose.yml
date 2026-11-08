@@ -1,0 +1,28 @@
+# media4: stack "nginx-prometheus-exporter" (gemigreerd van Portainer web editor)
+services:
+  nginx-prometheus-exporter:
+    image: nginx/nginx-prometheus-exporter:${NGINX_PROMETHEUS_EXPORTER_TAG}
+    container_name: nginx-prometheus-exporter
+    restart: unless-stopped
+    ports:
+      - "${NGINX_PROMETHEUS_EXPORTER_HOST_PORT}:9113"
+    command:
+      - "--nginx.scrape-uri=http://nginx-proxy-manager:8080/stub_status"
+    networks:
+      - deellan
+
+    labels:
+      - homepage.group=Monitoring
+      - homepage.name=NPM exporter
+      - homepage.icon=prometheus.png
+      - homepage.description=Nginx-metrics
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
+        tag: '{{.Name}}'
+networks:
+  deellan:
+    external: true
+    name: ${DOCKER_NETWORK}

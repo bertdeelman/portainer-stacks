@@ -1,0 +1,57 @@
+# media4: stack "jellyfin" (gemigreerd van Portainer web editor)
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:${JELLYFIN_TAG}
+    container_name: jellyfin
+    restart: unless-stopped
+
+    networks:
+      - deellan
+
+    ports:
+      - "${JELLYFIN_HOST_PORT_8096}:8096"
+      - "${JELLYFIN_HOST_PORT_8920}:8920"
+      - "${JELLYFIN_HOST_PORT_7359}:7359/udp"
+      - "${JELLYFIN_HOST_PORT_1900}:1900/udp"
+
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - JELLYFIN_PublishedServerUrl=${JELLYFIN_PUBLISHEDSERVERURL}
+
+    volumes:
+      - ${DOCKER_DIR}/jellyfin/config:/config
+      - ${DOCKER_DIR}/jellyfin/cache:/cache
+      - films:/media/movies:ro
+      - series:/media/tvshows:ro
+      - ${MUSIC_DIR}:/media/music:ro     # muziek op media4; verwijder deze regel als je geen muziek meer hebt
+
+    devices:
+      - /dev/dri:/dev/dri   # Intel QSV / VAAPI (Synology met Intel CPU)
+
+    group_add:
+      - "44"   # 'render' group voor toegang tot /dev/dri
+
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
+        tag: '{{.Name}}'
+networks:
+  deellan:
+    external: true
+
+    name: ${DOCKER_NETWORK}
+volumes:
+  films:
+    driver_opts:
+      type: nfs
+      o: "addr=${NFS_HOST},nfsvers=4,ro"
+      device: ":/volume1/video/films"
+  series:
+    driver_opts:
+      type: nfs
+      o: "addr=${NFS_HOST},nfsvers=4,ro"
+      device: ":/volume1/video/series"

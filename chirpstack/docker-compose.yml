@@ -1,0 +1,57 @@
+# media4: stack "chirpstack" (gemigreerd van Portainer web editor)
+services:
+  chirpstack:
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:8080/ || curl -fs -o /dev/null http://localhost:8080/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    image: chirpstack/chirpstack:${CHIRPSTACK_TAG}
+    container_name: chirpstack
+    restart: unless-stopped
+    command: -c /etc/chirpstack
+    volumes:
+      - ${DOCKER_DIR}/chirpstack/configuration/chirpstack:/etc/chirpstack:ro
+    ports:
+      - "${CHIRPSTACK_HOST_PORT_8080}:8080"
+      - "${CHIRPSTACK_HOST_PORT_1700}:1700/udp"
+    networks:
+      - deellan
+
+    labels:
+      - homepage.group=Smart Home
+      - homepage.name=ChirpStack
+      - homepage.icon=chirpstack.png
+      - homepage.href=http://${HOMEPAGE_HOST}:${CHIRPSTACK_HOST_PORT_8080}/
+      - homepage.description=LoRaWAN network server
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
+        tag: '{{.Name}}'
+  chirpstack-gateway-bridge:
+    image: chirpstack/chirpstack-gateway-bridge:${CHIRPSTACK_GATEWAY_BRIDGE_TAG}
+    container_name: chirpstack-gateway-bridge
+    restart: unless-stopped
+    volumes:
+      - ${DOCKER_DIR}/chirpstack/configuration/chirpstack-gateway-bridge:/etc/chirpstack-gateway-bridge:ro
+    networks:
+      - deellan
+
+    labels:
+      - homepage.group=Smart Home
+      - homepage.name=ChirpStack GW bridge
+      - homepage.icon=chirpstack.png
+      - homepage.description=LoRa gateway bridge
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: '3'
+        tag: '{{.Name}}'
+networks:
+  deellan:
+    external: true
+    name: ${DOCKER_NETWORK}
