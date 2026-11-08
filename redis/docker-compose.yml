@@ -20,7 +20,7 @@ services:
 #        max-size: "200m"
 
     labels:
-      - homepage.group=Infrastructure
+      - homepage.group=Services
       - homepage.name=Redis
       - homepage.icon=redis.png
       - homepage.description=Cache
@@ -43,7 +43,7 @@ services:
     depends_on:
       - redis
     labels:
-      - homepage.group=Monitoring
+      - homepage.group=Services
       - homepage.name=Redis exporter
       - homepage.icon=prometheus.png
       - homepage.description=Redis-metrics

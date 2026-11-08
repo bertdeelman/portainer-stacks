@@ -6,6 +6,7 @@ Gebruik:
 
 Voorbeeld:
   python3 set-env.py HOMEPAGE_HOST=media4.local -- spoolman partdb dockerproxy@2
+  python3 set-env.py -- spoolman partdb      (zonder KEY=VALUE: alleen pull en redeploy)
 
 Omgevingsvariabelen: PORTAINER_URL (standaard http://localhost:9000), PORTAINER_TOKEN, GIT_TOKEN.
 Een stack wordt alleen opnieuw gedeployed als er echt iets verandert.
@@ -46,7 +47,7 @@ for t in targets:
         print(f'[{t}] geen Git-stack, overgeslagen'); continue
     env = {e['name']: e['value'] for e in (s.get('Env') or [])}
     changed = {k: v for k, v in updates.items() if env.get(k) != v}
-    if not changed:
+    if updates and not changed:
         print(f'[{t}] al goed, overgeslagen'); continue
     env.update(changed)
     auth = (s['GitConfig'].get('Authentication') or {})
@@ -54,6 +55,6 @@ for t in targets:
             'repositoryReferenceName': s['GitConfig'].get('ReferenceName') or 'refs/heads/main',
             'repositoryAuthentication': True, 'repositoryUsername': auth.get('Username', ''),
             'repositoryPassword': GIT_TOKEN}
-    print(f'[{t}] {", ".join(changed)} bijwerken en redeployen...')
+    print(f'[{t}] {", ".join(changed) or "pull"} bijwerken en redeployen...')
     api('PUT', f'/api/stacks/{s["Id"]}/git/redeploy?endpointId={s["EndpointId"]}', body)
     print(f'[{t}] klaar')

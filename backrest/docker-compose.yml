@@ -27,7 +27,7 @@ services:
         max-file: "3"
         tag: "{{.Name}}"
     labels:
-      - homepage.group=Infrastructure
+      - homepage.group=Beheer
       - homepage.name=Backrest
       - homepage.icon=mdi-backup-restore
       - homepage.href=http://${BACKREST_HOST}:${BACKREST_PORT}/

@@ -12,7 +12,7 @@ services:
     environment:
       TZ: ${TZ}
     labels:
-      - homepage.group=Smart Home
+      - homepage.group=Services
       - homepage.name=Piper
       - homepage.icon=mdi-text-to-speech
       - homepage.description=Text-to-speech via Wyoming (server1)

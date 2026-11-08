@@ -27,7 +27,7 @@ services:
       timeout: 10s
 
     labels:
-      - homepage.group=Monitoring
+      - homepage.group=Services
       - homepage.name=Pi-hole exporter
       - homepage.icon=prometheus.png
       - homepage.description=Pi-hole-metrics

@@ -17,7 +17,7 @@ services:
       - ${SECRETS_DIR}/geoipupdate_account_id:/run/secrets/geoipupdate_account_id:ro
       - ${SECRETS_DIR}/geoipupdate_license_key:/run/secrets/geoipupdate_license_key:ro
     labels:
-      - homepage.group=Security
+      - homepage.group=Services
       - homepage.name=GeoIP update
       - homepage.icon=mdi-earth
       - homepage.description=MaxMind GeoLite2

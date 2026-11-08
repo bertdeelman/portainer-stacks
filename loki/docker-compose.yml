@@ -21,7 +21,7 @@ services:
         tag: "{{.Name}}"
 
     labels:
-      - homepage.group=Monitoring
+      - homepage.group=Services
       - homepage.name=Loki
       - homepage.icon=loki.png
       - homepage.description=Log-opslag

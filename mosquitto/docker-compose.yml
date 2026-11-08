@@ -14,7 +14,7 @@ services:
     environment:
       TZ: ${TZ}
     labels:
-      - homepage.group=Smart Home
+      - homepage.group=Services
       - homepage.name=Mosquitto
       - homepage.icon=mosquitto.png
       - homepage.description=MQTT-broker (server1)

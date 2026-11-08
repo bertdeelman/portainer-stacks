@@ -84,7 +84,7 @@ services:
         max-file: "1"
         tag: "{{.Name}}"
     labels:
-      - homepage.group=Monitoring
+      - homepage.group=Services
       - homepage.name=Node exporter
       - homepage.icon=prometheus.png
       - homepage.description=Host-metrics media4

@@ -22,7 +22,7 @@ services:
     labels:
       - homepage.group=Smart Home
       - homepage.name=ChirpStack
-      - homepage.icon=chirpstack.png
+      - homepage.icon=mdi-radio-tower
       - homepage.href=http://${HOMEPAGE_HOST}:${CHIRPSTACK_HOST_PORT_8080}/
       - homepage.description=LoRaWAN network server
     logging:
@@ -41,9 +41,9 @@ services:
       - deellan
 
     labels:
-      - homepage.group=Smart Home
+      - homepage.group=Services
       - homepage.name=ChirpStack GW bridge
-      - homepage.icon=chirpstack.png
+      - homepage.icon=mdi-radio-tower
       - homepage.description=LoRa gateway bridge
     logging:
       driver: json-file

@@ -12,7 +12,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
     labels:
-      - homepage.group=Infrastructure
+      - homepage.group=Services
       - homepage.name=Docker Proxy server1
       - homepage.icon=docker.png
       - homepage.description=Docker socket proxy (server1)

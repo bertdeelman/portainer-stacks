@@ -20,7 +20,7 @@ services:
         tag: "{{.Name}}"
 
     labels:
-      - homepage.group=Monitoring
+      - homepage.group=Beheer
       - homepage.name=Uptime Kuma
       - homepage.icon=uptime-kuma.png
       - homepage.href=http://${UPTIME_KUMA_HOST}:${UPTIME_KUMA_PORT}/

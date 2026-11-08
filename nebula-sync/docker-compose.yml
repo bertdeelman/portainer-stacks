@@ -12,7 +12,7 @@ services:
       RUN_GRAVITY: "true"
       CRON: ${NEBULA_CRON}
     labels:
-      - homepage.group=Infrastructure
+      - homepage.group=Services
       - homepage.name=Nebula Sync
       - homepage.icon=mdi-sync
       - homepage.description=Pi-hole sync media4 naar replica (server1)

@@ -23,7 +23,7 @@ services:
       - 1.0.0.1  # Cloudflare backup
     labels:
       - com.centurylinklabs.watchtower.enable=false
-      - homepage.group=Infrastructure
+      - homepage.group=Netwerk
       - homepage.name=Pi-hole
       - homepage.icon=pi-hole.png
       - homepage.href=http://${PIHOLE_IP}:${FTLCONF_WEBSERVER_PORT}/admin/

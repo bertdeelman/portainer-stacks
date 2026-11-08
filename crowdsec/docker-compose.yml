@@ -42,7 +42,7 @@ services:
         tag: "{{.Name}}"
 
     labels:
-      - homepage.group=Security
+      - homepage.group=Services
       - homepage.name=CrowdSec
       - homepage.icon=crowdsec.png
       - homepage.description=IDS voor NPM

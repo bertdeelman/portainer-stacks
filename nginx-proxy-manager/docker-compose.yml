@@ -28,7 +28,7 @@ services:
       deellan:
         ipv4_address: ${NGINX_PROXY_MANAGER_DEELLAN_IP}
     labels:
-      - homepage.group=Infrastructure
+      - homepage.group=Netwerk
       - homepage.name=Nginx Proxy Manager
       - homepage.icon=nginx-proxy-manager.png
       - homepage.href=http://${HOMEPAGE_HOST}:681/

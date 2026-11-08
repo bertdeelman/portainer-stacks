@@ -20,7 +20,7 @@ services:
       - ${SECRETS_DIR}/postgres_password:/run/secrets/postgres_password:ro
 #
     labels:
-      - homepage.group=Infrastructure
+      - homepage.group=Services
       - homepage.name=Postgres
       - homepage.icon=postgres.png
       - homepage.description=Gedeelde database
@@ -47,7 +47,7 @@ services:
     depends_on:
       - postgres
     labels:
-      - homepage.group=Monitoring
+      - homepage.group=Services
       - homepage.name=Postgres exporter
       - homepage.icon=prometheus.png
       - homepage.description=Postgres-metrics

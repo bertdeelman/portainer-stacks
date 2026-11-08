@@ -12,7 +12,7 @@ services:
       TZ: ${TZ}
       OPTIONS: "--append-only --private-repos --prometheus"
     labels:
-      - homepage.group=Infrastructure
+      - homepage.group=Services
       - homepage.name=Restic server
       - homepage.icon=restic.png
       - homepage.description=Back-updoel, append-only (server1)

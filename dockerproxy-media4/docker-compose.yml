@@ -31,9 +31,8 @@ services:
         max-file: "1"
         tag: "{{.Name}}"
     labels:
-      - homepage.group=Infrastructure
+      - homepage.group=Services
       - homepage.name=Docker Proxy
       - homepage.icon=docker.png
-      - homepage.href=http://${HOMEPAGE_HOST}:2375
       - homepage.description=Docker socket proxy
       - monocker.enable=true

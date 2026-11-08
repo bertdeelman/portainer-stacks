@@ -16,7 +16,7 @@ services:
       FTLCONF_webserver_api_password: ${PIHOLE_PASSWORD}
       FTLCONF_dns_listeningMode: all
     labels:
-      - homepage.group=Infrastructure
+      - homepage.group=Netwerk
       - homepage.name=Pi-hole replica
       - homepage.icon=pi-hole.png
       - homepage.href=http://${PIHOLE_HOST}:${PIHOLE_WEB_PORT}/admin/

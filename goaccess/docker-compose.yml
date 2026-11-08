@@ -36,7 +36,7 @@ services:
         tag: "{{.Name}}"
 
     labels:
-      - homepage.group=Infrastructure
+      - homepage.group=Netwerk
       - homepage.name=GoAccess
       - homepage.icon=goaccess.png
       - homepage.href=http://${HOMEPAGE_HOST}:7880/

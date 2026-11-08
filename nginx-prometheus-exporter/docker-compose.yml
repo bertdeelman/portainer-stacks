@@ -12,7 +12,7 @@ services:
       - deellan
 
     labels:
-      - homepage.group=Monitoring
+      - homepage.group=Services
       - homepage.name=NPM exporter
       - homepage.icon=prometheus.png
       - homepage.description=Nginx-metrics
