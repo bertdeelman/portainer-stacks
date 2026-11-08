@@ -1,0 +1,27 @@
+# media4: Homepage dashboard, ontdekt services via Docker-labels op media4 en server1 (zie config/docker.yaml)
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:${HOMEPAGE_TAG}
+    container_name: homepage
+    network_mode: ${DOCKER_NETWORK}
+    restart: unless-stopped
+    ports:
+      - "${HOMEPAGE_PORT}:3000"
+    volumes:
+      - ${HOMEPAGE_CONFIG_DIR}:/app/config
+    environment:
+      TZ: ${TZ}
+      PUID: ${PUID}
+      PGID: ${PGID}
+      HOMEPAGE_ALLOWED_HOSTS: ${HOMEPAGE_ALLOWED_HOSTS}
+      DOCKER_HOST: ${DOCKER_HOST}
+      HOMEPAGE_VAR_PORTAINER_KEY: ${HOMEPAGE_VAR_PORTAINER_KEY}
+      HOMEPAGE_VAR_JELLYFIN_KEY: ${HOMEPAGE_VAR_JELLYFIN_KEY}
+      HOMEPAGE_VAR_QBIT_USER: ${HOMEPAGE_VAR_QBIT_USER}
+      HOMEPAGE_VAR_QBIT_PASS: ${HOMEPAGE_VAR_QBIT_PASS}
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+        tag: "{{.Name}}"
