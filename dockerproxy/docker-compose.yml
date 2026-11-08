@@ -1,0 +1,19 @@
+services:
+  dockerproxy:
+    image: ghcr.io/tecnativa/docker-socket-proxy:${DOCKERPROXY_TAG}
+    container_name: dockerproxy
+    restart: unless-stopped
+    environment:
+      - CONTAINERS=1
+      - POST=0
+    ports:
+      - "${DOCKERPROXY_BIND_IP}:${DOCKERPROXY_PORT}:2375"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "3"
+        tag: "{{.Name}}"
