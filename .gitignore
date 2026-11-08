@@ -16,3 +16,7 @@ stack.env
 
 # Backups
 *.bak
+
+# Python
+__pycache__/
+*.pyc
