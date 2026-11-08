@@ -37,5 +37,5 @@ services:
       - homepage.name=CalibreWeb
       - homepage.icon=calibre.png
       - homepage.href=http://${HOMEPAGE_HOST}:8083/
-      - homepage.description=CalibreWeb
+      - homepage.description=E-boekenbibliotheek
       - monocker.enable=true
