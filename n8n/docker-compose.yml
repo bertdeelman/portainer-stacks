@@ -20,10 +20,10 @@ services:
       - DB_POSTGRESDB_PORT=${DB_POSTGRESDB_PORT}
       - DB_POSTGRESDB_DATABASE=n8n
       - DB_POSTGRESDB_USER=${DB_POSTGRESDB_USER}
-      - DB_POSTGRESDB_PASSWORD=${DB_POSTGRESDB_PASSWORD}
+      - DB_POSTGRESDB_PASSWORD_FILE=/run/secrets/db_postgresdb_password
       - N8N_BASIC_AUTH_ACTIVE=false
       - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}
-      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+      - N8N_BASIC_AUTH_PASSWORD_FILE=/run/secrets/n8n_basic_auth_password
       - N8N_HOST=${N8N_HOST}
       - N8N_PROTOCOL=https
       - N8N_PORT=${N8N_PORT}
@@ -50,6 +50,8 @@ services:
       - ${DOWNLOADS_DIR}/complete/temp:/data/bron:ro
       - ${BOEKENSPOT_DIR}:/data/doel
       - ${BOEKENCALIBRE_DIR}:/data/calibre:ro
+      - ${SECRETS_DIR}/db_postgresdb_password:/run/secrets/db_postgresdb_password:ro
+      - ${SECRETS_DIR}/n8n_basic_auth_password:/run/secrets/n8n_basic_auth_password:ro
     group_add:
       - "65541"
     labels:

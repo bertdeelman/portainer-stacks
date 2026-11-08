@@ -7,10 +7,11 @@ services:
     volumes:
       - ${DOCKER_DIR}/pihole/dnsmasq.d:/etc/dnsmasq.d
       - ${DOCKER_DIR}/pihole/pihole:/etc/pihole
+      - ${SECRETS_DIR}/pihole_webpassword:/run/secrets/pihole_webpassword:ro
     environment:
       - FTLCONF_webserver_port=${FTLCONF_WEBSERVER_PORT}
       - FTLCONF_dns_reply_addr4=${FTLCONF_DNS_REPLY_ADDR4}
-      - WEBPASSWORD=${WEBPASSWORD}
+      - WEBPASSWORD_FILE=/run/secrets/pihole_webpassword
       - TZ=${TZ}
       - DNSMASQ_USER=${DNSMASQ_USER}
       - DNSMASQ_LISTENING=all

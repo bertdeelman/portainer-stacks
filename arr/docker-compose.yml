@@ -17,6 +17,8 @@ services:
       - ${GLUETUN_CONTROL_PORT}:8000
     volumes:
       - ${DOCKER_DIR}/gluetun:/gluetun
+      - ${SECRETS_DIR}/wireguard_private_key:/run/secrets/wireguard_private_key:ro
+      - ${SECRETS_DIR}/wireguard_preshared_key:/run/secrets/wireguard_preshared_key:ro
     environment:
       - BLOCK_MALICIOUS=off
       - PUID=${PUID}
@@ -26,8 +28,6 @@ services:
       - SHADOWSOCKS=off
       - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER}
       - VPN_TYPE=${VPN_TYPE}
-      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
-      - WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
       - WIREGUARD_PUBLIC_KEY=${WIREGUARD_PUBLIC_KEY}
       - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
       - UPDATER_PERIOD=24h

@@ -19,14 +19,16 @@ services:
       - type: bind
         source: ${DOCKER_DIR}/influxdb2/config
         target: /etc/influxdb2
+      - ${SECRETS_DIR}/influxdb_init_password:/run/secrets/influxdb_init_password:ro
+      - ${SECRETS_DIR}/influxdb_admin_token:/run/secrets/influxdb_admin_token:ro
     environment:
       - DOCKER_INFLUXDB_INIT_MODE=setup
       - DOCKER_INFLUXDB_INIT_USERNAME=${DOCKER_INFLUXDB_INIT_USERNAME}
-      - DOCKER_INFLUXDB_INIT_PASSWORD=${DOCKER_INFLUXDB_INIT_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_PASSWORD_FILE=/run/secrets/influxdb_init_password
       - DOCKER_INFLUXDB_INIT_ORG=${DOCKER_INFLUXDB_INIT_ORG}
       - DOCKER_INFLUXDB_INIT_BUCKET=${DOCKER_INFLUXDB_INIT_BUCKET}
       - DOCKER_INFLUXDB_INIT_RETENTION=1d
-      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN}
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN_FILE=/run/secrets/influxdb_admin_token
     restart: always
     labels:
       - homepage.group=Monitoring

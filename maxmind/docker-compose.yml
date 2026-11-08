@@ -6,14 +6,16 @@ services:
     restart: unless-stopped
 
     environment:
-      GEOIPUPDATE_ACCOUNT_ID: "${GEOIPUPDATE_ACCOUNT_ID}"
-      GEOIPUPDATE_LICENSE_KEY: "${GEOIPUPDATE_LICENSE_KEY}"
+      GEOIPUPDATE_ACCOUNT_ID_FILE: /run/secrets/geoipupdate_account_id
+      GEOIPUPDATE_LICENSE_KEY_FILE: /run/secrets/geoipupdate_license_key
       GEOIPUPDATE_EDITION_IDS: "GeoLite2-ASN GeoLite2-City GeoLite2-Country"
       GEOIPUPDATE_FREQUENCY: "72"
       GEOIPUPDATE_VERBOSE: "1"
 
     volumes:
       - ${DOCKER_DIR}/maxmind:/usr/share/GeoIP
+      - ${SECRETS_DIR}/geoipupdate_account_id:/run/secrets/geoipupdate_account_id:ro
+      - ${SECRETS_DIR}/geoipupdate_license_key:/run/secrets/geoipupdate_license_key:ro
     labels:
       - homepage.group=Security
       - homepage.name=GeoIP update

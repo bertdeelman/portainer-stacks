@@ -9,13 +9,15 @@ services:
       - "${HOMEPAGE_PORT}:3000"
     volumes:
       - ${HOMEPAGE_CONFIG_DIR}:/app/config
+      - ${SECRETS_DIR}/portainer_key:/run/secrets/portainer_key:ro
+      - ${SECRETS_DIR}/jellyfin_key:/run/secrets/jellyfin_key:ro
     environment:
       TZ: ${TZ}
       PUID: ${PUID}
       PGID: ${PGID}
       HOMEPAGE_ALLOWED_HOSTS: ${HOMEPAGE_ALLOWED_HOSTS}
-      HOMEPAGE_VAR_PORTAINER_KEY: ${HOMEPAGE_VAR_PORTAINER_KEY}
-      HOMEPAGE_VAR_JELLYFIN_KEY: ${HOMEPAGE_VAR_JELLYFIN_KEY}
+      HOMEPAGE_FILE_PORTAINER_KEY: /run/secrets/portainer_key
+      HOMEPAGE_FILE_JELLYFIN_KEY: /run/secrets/jellyfin_key
     logging:
       driver: json-file
       options:
