@@ -26,4 +26,8 @@ services:
       - homepage.href=http://${UPTIME_KUMA_HOST}:${UPTIME_KUMA_PORT}/
       - homepage.description=Uptime monitoring
 volumes:
+  # Vast volume met de bestaande database (12 MB). Zonder vaste naam zet Docker de
+  # stacknaam ervoor, waardoor een andere stacknaam een nieuw, leeg volume oplevert.
   uptime-kuma-data:
+    name: uptime-kuma_uptime-kuma-data
+    external: true
